@@ -1,9 +1,10 @@
-name: 🔥 Continuous Integration
+name: 🔥 CI
 
 on: [push, pull_request]
 
 jobs:
   build_and_test:
+    name: 🐧 Build & Test Linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
