@@ -1,4 +1,4 @@
 // Managing AppImages from default database
-pub mod database;
+pub mod catalog;
 // Looking up fro Appimages on github releases
 pub mod github;
