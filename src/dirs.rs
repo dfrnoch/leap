@@ -6,9 +6,9 @@ pub fn get_dir(var: &str, join: &str) -> Option<PathBuf> {
 }
 
 pub fn cache_dir() -> Option<PathBuf> {
-    get_dir("$HOME", "/.cache/leap")
+    get_dir("HOME", ".cache/leap")
 }
 
 pub fn data_dir() -> Option<PathBuf> {
-    get_dir("$HOME", "/.local/share/leap")
+    get_dir("HOME", ".local/share/leap")
 }
