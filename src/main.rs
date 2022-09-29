@@ -15,7 +15,7 @@ fn main() {
 
     match cli.args {
         Args::Install(opts) => {
-            if let Err(e) = opts.run() {
+            if let Err(e) = opts.install() {
                 log::error!("{}", e);
             }
         }

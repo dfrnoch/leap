@@ -6,7 +6,7 @@ const DB_URL: &str = "https://appimage.github.io/search.json";
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Database {
-    pub name: String,
+    pub title: String,
     pub url: String,
 }
 
