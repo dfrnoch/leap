@@ -3,7 +3,7 @@ pub mod install;
 use clap::Parser;
 
 #[derive(Parser)]
-#[clap(author, version, about, long_about = None)]
+#[clap(version, about, long_about = None)]
 pub struct Cli {
     #[clap(subcommand)]
     pub args: Args,
