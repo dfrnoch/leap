@@ -1,5 +1,5 @@
 use clap::Parser;
-use cli::{Args, Cli};
+use cli::{Cli, Commands};
 
 pub mod appimage;
 pub mod cli;
@@ -13,8 +13,8 @@ fn main() {
     // Set up logging
     logging::set_up_logging();
 
-    match cli.args {
-        Args::Install(opts) => {
+    match cli.command {
+        Commands::Install(opts) => {
             if let Err(e) = opts.install() {
                 log::error!("{}", e);
             }

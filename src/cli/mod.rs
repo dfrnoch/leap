@@ -1,17 +1,16 @@
 pub mod install;
 
-use clap::Parser;
+use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
 pub struct Cli {
-    #[clap(subcommand)]
-    pub args: Args,
-
+    #[command(subcommand)]
+    pub command: Commands,
 }
 
-#[derive(Parser)]
-pub enum Args {
+#[derive(Subcommand, Debug)]
+pub enum Commands {
     /// Install an appimage.
     Install(install::Install),
     // /// Uninstall an appimage.

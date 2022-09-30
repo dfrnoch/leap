@@ -6,19 +6,20 @@ use dialoguer::{theme::ColorfulTheme, Confirm};
 use super::*;
 
 #[derive(Clone, Debug, Parser)]
+#[clap(alias = "i", about = "Install an appimage.")]
 pub struct Install {
-    pub name: Option<String>,
-
-    #[clap(short, long)]
+    #[arg(short, long)]
     pub link: Option<String>,
 
-    #[clap(short, long)]
+    #[arg(short, long)]
     pub github: Option<String>,
+
+    pub name: Option<String>,
 }
 
-struct Appimage {
-    name: String,
-    link: String,
+pub struct Appimage {
+    pub name: String,
+    pub link: String,
 }
 
 impl Install {
@@ -27,7 +28,7 @@ impl Install {
 
         match self {
             Install {
-                name: Some(name),
+                name: Some(_name),
                 link: None,
                 github: None,
             } => {
@@ -49,12 +50,16 @@ impl Install {
                 });
             }
             Install {
-                name: None,
+                name,
                 link: Some(link),
                 github: None,
             } => {
+                let name = name
+                    .to_owned()
+                    .ok_or("Please provide a name \nusage: leap -l <LINK> <APP_NAME>")?;
+
                 appimage = Some(Appimage {
-                    name: link.clone(),
+                    name: name,
                     link: link.clone(),
                 });
             }
@@ -63,6 +68,7 @@ impl Install {
                 link: None,
                 github: Some(repo),
             } => {
+                log::info!("Fetching latest release from github");
                 let releases = crate::appimage::github::fetch_release(repo)?;
                 //todo
             }
@@ -78,12 +84,10 @@ impl Install {
             .interact_opt()
             .unwrap()
         {
-            Some(true) => println!("Looks like you want to continue"),
+            Some(true) => install::download(result)?,
             Some(false) => println!("nevermind then :("),
-            None => println!("Ok, we can start over later"),
+            None => println!("Operation cancelled"),
         }
-
-        install::download(&result.link)?;
 
         Ok(())
     }
