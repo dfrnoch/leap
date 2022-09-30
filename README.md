@@ -1,11 +1,32 @@
-# leap
+<div align="center">
+  <img height="170x" src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/319/infinity_267e-fe0f.png" />
 
-## Auto lookup source
+  <h1>Leap</h1>
 
-https://appimage.github.io/apps/
+  <p>
+    <strong>AppImage package manager</strong>
+  </p>
 
-## Original idea Zap
+  <p>
+    <a href="https://github.com/lnxcz/leap/actions"><img alt="CI" src="https://github.com/lnxcz/leap/actions/workflows/ci.yml/badge.svg" /></a>
+    <img alt="Leap top language" src="https://img.shields.io/github/languages/top/lnxcz/leap">
+    <a href="https://www.codefactor.io/repository/github/lnxcz/leap"><img src="https://www.codefactor.io/repository/github/lnxcz/leap/badge" alt="CodeFactor" /></a>
+    <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/github/license/lnxcz/leap?color=blueviolet" /></a>
+  </p>
+</div>
 
 ## Is it any good?
-
 Yes.
+
+## License
+
+Anchor is licensed under [Apache 2.0](./LICENSE).
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in Anchor by you, as defined in the Apache-2.0 license, shall be
+licensed as above, without any additional terms or conditions.
+
+## Contribution
+
+Thank you for your interest in contributing to Anchor!
+Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how.
