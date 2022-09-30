@@ -1,6 +1,6 @@
-use std::io::Write;
-use serde::{Deserialize, Serialize};
 use crate::dirs;
+use serde::{Deserialize, Serialize};
+use std::io::Write;
 
 const DB_URL: &str = "https://appimage.github.io/search.json";
 
@@ -12,9 +12,9 @@ pub struct Database {
 
 // Fetches the catalog from the appimage database
 // If the catalog is already present in the cache, it will be used instead
-pub fn fetch_catalog() -> Result<Vec<Database>, Box<dyn std::error::Error>> {
+pub async fn fetch_catalog() -> Result<Vec<Database>, Box<dyn std::error::Error>> {
     log::info!("Fetching catalog from {}", DB_URL);
-    let mut path = dirs::cache_dir().unwrap();
+    let mut path = dirs::cache_dir();
     path.push("database.json");
 
     if path.exists() {
@@ -25,11 +25,11 @@ pub fn fetch_catalog() -> Result<Vec<Database>, Box<dyn std::error::Error>> {
         Ok(db)
     } else {
         log::info!("Downloading catalog");
-        let resp = reqwest::blocking::get(DB_URL)?.text()?;
+        let resp = reqwest::get(DB_URL).await?.text().await?;
         let db: Vec<Database> = serde_json::from_str(&resp)?;
         log::info!("Saving catalog to cache");
 
-        let mut path = dirs::cache_dir().unwrap();
+        let mut path = dirs::cache_dir();
         path.push("database.json");
         let mut file = std::fs::File::create(path)?;
         file.write_all(resp.as_bytes())?;

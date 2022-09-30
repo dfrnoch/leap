@@ -6,7 +6,8 @@ pub mod cli;
 pub mod dirs;
 pub mod logging;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     // Parse command line arguments
     let cli = Cli::parse();
 
@@ -15,7 +16,7 @@ fn main() {
 
     match cli.command {
         Commands::Install(opts) => {
-            if let Err(e) = opts.install() {
+            if let Err(e) = opts.install().await {
                 log::error!("{}", e);
             }
         }

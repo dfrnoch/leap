@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use serde_json::{from_str};
+use serde_json::from_str;
 use std::error::Error;
 
 #[derive(Debug, Deserialize)]
@@ -15,15 +15,13 @@ pub struct Release {
     pub assets: Vec<Asset>,
 }
 
-
-pub fn fetch_release(repo: &str) -> Result<Vec<Release>, Box<dyn Error>> {
+pub async fn fetch_release(repo: &str) -> Result<Vec<Release>, Box<dyn Error>> {
     let url = format!("https://api.github.com/repos/{}/releases?per_page=10", repo);
-    let resp = reqwest::blocking::get(&url)?.text()?;
+    let resp = reqwest::get(&url).await?.text().await?;
 
     let releases: Vec<Release> = from_str(&resp)?;
 
     Ok(releases)
 }
-
 
 //TODO: Parse links from github

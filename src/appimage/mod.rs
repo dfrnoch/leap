@@ -4,3 +4,9 @@ pub mod catalog;
 pub mod github;
 
 pub mod install;
+
+pub mod remove;
+
+pub mod update;
+
+pub mod metadata;
