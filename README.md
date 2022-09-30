@@ -4,7 +4,7 @@
   <h1>Leap</h1>
 
   <p>
-    <strong>AppImage package manager</strong>
+    <strong>Fast & Simple AppImage manager</strong>
   </p>
 
   <p>
