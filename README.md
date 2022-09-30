@@ -11,7 +11,7 @@
     <a href="https://github.com/lnxcz/leap/actions"><img alt="CI" src="https://github.com/lnxcz/leap/actions/workflows/ci.yml/badge.svg" /></a>
     <img alt="Leap top language" src="https://img.shields.io/github/languages/top/lnxcz/leap">
     <a href="https://www.codefactor.io/repository/github/lnxcz/leap"><img src="https://www.codefactor.io/repository/github/lnxcz/leap/badge" alt="CodeFactor" /></a>
-    <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/github/license/lnxcz/leap /></a>
+    <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/github/license/lnxcz/leap" /></a>
   </p>
 </div>
 
