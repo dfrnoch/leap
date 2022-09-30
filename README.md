@@ -32,6 +32,6 @@ licensed as above, without any additional terms or conditions.
 Thank you for your interest in contributing to Leap!
 Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how.
 
-## Project Statistics
+## Project Analytics
 
 ![Alt](https://repobeats.axiom.co/api/embed/54602517fd6bbea511cb9031d0c493774608bbce.svg "Repobeats analytics image")
