@@ -20,7 +20,7 @@ Yes.
 
 ## License
 
-Anchor is licensed under [Apache 2.0](./LICENSE).
+Leap is licensed under [Apache 2.0](./LICENSE).
 
 Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in Anchor by you, as defined in the Apache-2.0 license, shall be
@@ -28,5 +28,5 @@ licensed as above, without any additional terms or conditions.
 
 ## Contribution
 
-Thank you for your interest in contributing to Anchor!
+Thank you for your interest in contributing to Leap!
 Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how.
