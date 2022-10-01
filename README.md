@@ -1,5 +1,5 @@
 <div align="center">
-  <img height="170x" src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/319/infinity_267e-fe0f.png" />
+  <img height="170x" src="./assets/icon.png" />
 
   <h1>Leap</h1>
 
