@@ -10,13 +10,10 @@
   <p>
     <a href="https://github.com/lnxcz/leap/actions"><img alt="CI" src="https://github.com/lnxcz/leap/actions/workflows/ci.yml/badge.svg" /></a>
     <img alt="Leap top language" src="https://img.shields.io/github/languages/top/lnxcz/leap">
-    <a href="https://www.codefactor.io/repository/github/lnxcz/leap"><img src="https://www.codefactor.io/repository/github/lnxcz/leap/badge" alt="CodeFactor" /></a>
+    <a href="https://app.fossa.com/projects/git%2Bgithub.com%2Flnxcz%2Fleap?ref=badge_shield"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Flnxcz%2Fleap.svg?type=shield" alt="FOSSA License" /></a>
     <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/github/license/lnxcz/leap" /></a>
   </p>
 </div>
-
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flnxcz%2Fleap.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Flnxcz%2Fleap?ref=badge_large)
 
 ## Is it any good?
 
@@ -38,4 +35,7 @@ Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how.
 ## Project Analytics
 
 ![Alt](https://repobeats.axiom.co/api/embed/54602517fd6bbea511cb9031d0c493774608bbce.svg "Repobeats analytics image")
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flnxcz%2Fleap.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Flnxcz%2Fleap?ref=badge_shield)
+
+## FOSSA Status
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flnxcz%2Fleap.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Flnxcz%2Fleap?ref=badge_large)
