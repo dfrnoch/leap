@@ -7,7 +7,10 @@ jobs:
     name: 🐧 Build & Test Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: 📝 Coverage
+        uses: codecov/codecov-action@v3
+      - name: 📥 Checkout
+        uses: actions/checkout@v2
       - name: ⚡ Cache
         uses: actions/cache@v2
         with:
@@ -17,7 +20,8 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - uses: actions-rs/toolchain@v1
+      - name: 🦀 Rust toolchain
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
 
@@ -26,7 +30,7 @@ jobs:
         with:
           command: build
 
-      - name: 🔎 Test
+      - name: 🧪 Test
         uses: actions-rs/cargo@v1
         with:
           command: test
