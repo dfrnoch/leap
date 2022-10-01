@@ -9,8 +9,6 @@ jobs:
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v2
-      - name: 📝 Coverage
-        uses: codecov/codecov-action@v3
       - name: ⚡ Cache
         uses: actions/cache@v2
         with:
