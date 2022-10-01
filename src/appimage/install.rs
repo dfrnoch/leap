@@ -1,4 +1,4 @@
-use std::{cmp::min, fs::File, io::Write};
+use std::{cmp::min, fs::File, io::Write, path::PathBuf};
 
 use crate::dirs::data_dir;
 use futures_util::StreamExt;
@@ -40,4 +40,16 @@ pub async fn download_file(name: String, link: String) -> Result<(), Box<dyn std
 
     pb.finish_with_message(format!("Downloaded {} to {:?}", name, path));
     return Ok(());
+}
+
+
+
+struct AppImage {
+    filepath: PathBuf,
+}
+
+
+
+fn extract_data(){
+
 }

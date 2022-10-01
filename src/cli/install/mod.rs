@@ -18,11 +18,6 @@ pub struct Install {
     pub name: Option<String>,
 }
 
-// #[derive(Copy, Clone)]
-// pub struct Appimage {
-//     pub name: &'a str,
-//     pub link: &'a str,
-// }
 
 pub struct Appimage {
     pub name: String,
