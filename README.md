@@ -11,7 +11,9 @@
     <a href="https://github.com/lnxcz/leap/actions"><img alt="CI" src="https://github.com/lnxcz/leap/actions/workflows/ci.yml/badge.svg" /></a>
     <img alt="Leap top language" src="https://img.shields.io/github/languages/top/lnxcz/leap">
     <a href="https://app.fossa.com/projects/git%2Bgithub.com%2Flnxcz%2Fleap?ref=badge_shield"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Flnxcz%2Fleap.svg?type=shield" alt="FOSSA License" /></a>
-    <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/github/license/lnxcz/leap" /></a>
+    <a href="https://codecov.io/gh/lnxcz/leap" > 
+    <img src="https://codecov.io/gh/lnxcz/leap/branch/main/graph/badge.svg?token=NRRFCCSCLW"/> 
+  </a>
   </p>
 </div>
 
