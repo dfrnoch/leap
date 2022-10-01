@@ -15,6 +15,9 @@
   </p>
 </div>
 
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flnxcz%2Fleap.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Flnxcz%2Fleap?ref=badge_large)
+
 ## Is it any good?
 
 Yes.
@@ -35,3 +38,4 @@ Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how.
 ## Project Analytics
 
 ![Alt](https://repobeats.axiom.co/api/embed/54602517fd6bbea511cb9031d0c493774608bbce.svg "Repobeats analytics image")
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flnxcz%2Fleap.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Flnxcz%2Fleap?ref=badge_shield)
