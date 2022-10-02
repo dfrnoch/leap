@@ -8,7 +8,7 @@
   </p>
 
   <p>
-    <a href="https://github.com/lnxcz/leap/actions"><img alt="CI" src="https://img.shields.io/github/checks-status/lnxcz/leap/main?color=blue" /></a>
+    <a href="https://github.com/lnxcz/leap/actions"><img alt="CI" src="https://img.shields.io/github/workflow/status/lnxcz/leap/%F0%9F%94%A5%20CI/main?color=blue&label=%F0%9F%94%A5%20CI%20" /></a>
     <a href="https://wakatime.com/badge/user/5a193983-d8c2-4f90-acc2-b1f41cfe8941/project/717a25fe-8d46-460a-9d07-b4fef1f49b9c"><img src="https://wakatime.com/badge/user/5a193983-d8c2-4f90-acc2-b1f41cfe8941/project/717a25fe-8d46-460a-9d07-b4fef1f49b9c.svg" alt="wakatime"></a>
     <img alt="Leap top language" src="https://img.shields.io/github/languages/top/lnxcz/leap">
     <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/github/license/lnxcz/leap?color=blue" /></a>   
