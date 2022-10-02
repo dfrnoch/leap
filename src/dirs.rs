@@ -13,6 +13,11 @@ pub fn cache_dir() -> PathBuf {
     get_dir("HOME", ".cache/leap")
 }
 
-pub fn data_dir() -> PathBuf {
-    get_dir("HOME", ".local/share/leap")
+pub fn data_dir(join: Option<&str>) -> PathBuf {
+    let mut path = get_dir("HOME", ".local/share/leap");
+    if let Some(j) = join {
+        path = path.join(j);
+        std::fs::create_dir_all(&path).unwrap();
+    }
+    path
 }
