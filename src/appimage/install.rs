@@ -1,9 +1,9 @@
 use std::{cmp::min, fs, fs::File, io::Write};
 
 use crate::dirs::data_dir;
+use async_process::Command;
 use futures_util::StreamExt;
 use indicatif::{ProgressBar, ProgressStyle};
-use std::process::Command;
 
 pub async fn download_file(name: String, link: String) -> Result<(), Box<dyn std::error::Error>> {
     let name = format!("{}.AppImage", name);
@@ -43,28 +43,38 @@ pub async fn download_file(name: String, link: String) -> Result<(), Box<dyn std
     pb.finish_with_message(format!("Downloaded {} to {:?}", name, path));
 
     log::info!("Extracting data");
-    install_file(&name).unwrap();
+    install_file(&name).await?;
 
     return Ok(());
 }
 
+struct ExtractData {
+    icon: Option<String>,
+    desktop: Option<String>,
+}
+
 //TODO: Make this async, Symlink the file to .local/bin, permissions
 //FIXME: BUSY FILE
-fn install_file(name: &str) -> Result<(), Box<dyn std::error::Error>> {
+async fn install_file(name: &str) -> Result<(), Box<dyn std::error::Error>> {
     let path = data_dir(Some("apps"));
 
+    log::info!("Chmodding file");
     Command::new("chmod")
         .arg(format!("+x {:?}", path.join(name)).as_str())
         .output()
-        .expect("Failed to chmod");
+        .await?;
 
-    Command::new(path.join(name))
+    log::info!("Extracting file");
+    Command::new("/home/lynx/.local/share/leap/apps/osu.AppImage")
         .arg("--appimage-extract")
+        .arg(&path)
         .output()
-        .unwrap();
+        .await?;
 
-    let mut desktop_file = String::new();
-    let mut icon_file = String::new();
+    let mut data = ExtractData {
+        icon: None,
+        desktop: None,
+    };
 
     fs::read_dir(path.join("squashfs-root"))
         .unwrap()
@@ -74,25 +84,29 @@ fn install_file(name: &str) -> Result<(), Box<dyn std::error::Error>> {
             let path = entry.path();
             let file_name = path.file_name().unwrap().to_str().unwrap();
             if file_name.ends_with(".desktop") {
-                desktop_file = file_name.to_string();
+                data.desktop = Some(file_name.to_string());
             } else if file_name.ends_with(".png") || file_name.ends_with(".svg") {
-                icon_file = file_name.to_string();
+                data.icon = Some(file_name.to_string());
             }
         });
 
-    fs::rename(
-        path.join("squashfs-root").join(desktop_file),
-        path.join(name.to_string() + ".desktop"),
-    )
-    .unwrap();
-
-    fs::rename(
-        path.join("squashfs-root").join(icon_file),
-        path.join(name.to_string() + ".png"),
-    )
-    .unwrap();
-
-    fs::remove_dir_all(path.join("squashfs-root")).unwrap();
+    extract(data);
 
     return Ok(());
+}
+
+fn extract(data: ExtractData) -> Result<(), Box<dyn std::error::Error>> {
+    // fs::rename(
+    //     path.join("squashfs-root").join(desktop_file),
+    //     path.join(name.to_string() + ".desktop"),
+    // )
+    // .unwrap();
+
+    // fs::rename(
+    //     path.join("squashfs-root").join(icon_file),
+    //     path.join(name.to_string() + ".png"),
+    // )
+    // .unwrap();
+    // fs::remove_dir_all(path.join("squashfs-root")).unwrap();
+    Ok(())
 }
