@@ -1,4 +1,7 @@
 <div align="center">
+
+  <h2>⚠️ Heavily in development (Not working)</h2>
+
   <img height="170x" src="./assets/icon.png" />
 
   <h1>Leap</h1>
