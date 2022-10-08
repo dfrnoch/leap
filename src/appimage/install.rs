@@ -65,7 +65,7 @@ async fn install_file(name: &str) -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     log::info!("Extracting file");
-    Command::new("/home/lynx/.local/share/leap/apps/osu.AppImage")
+    Command::new( path.join(name))
         .arg("--appimage-extract")
         .arg(&path)
         .output()

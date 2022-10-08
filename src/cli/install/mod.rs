@@ -1,8 +1,7 @@
 use std::error::Error;
 
 use crate::appimage::{catalog::fetch_catalog, install};
-use dialoguer::{theme::ColorfulTheme, Confirm};
-use futures_util::Future;
+use dialoguer::{theme::ColorfulTheme, Confirm, Select};
 
 use super::*;
 
@@ -18,7 +17,6 @@ pub struct Install {
     pub name: Option<String>,
 }
 
-
 pub struct Appimage {
     pub name: String,
     pub link: String,
@@ -29,6 +27,7 @@ impl Install {
         let mut appimage: Option<Appimage> = None;
 
         match self {
+            //Install from db
             Install {
                 name: Some(_name),
                 link: None,
@@ -52,6 +51,8 @@ impl Install {
                     link: app.url,
                 });
             }
+
+            //Install from link
             Install {
                 name,
                 link: Some(link),
@@ -67,14 +68,27 @@ impl Install {
                     link: link.clone(),
                 });
             }
+
+            //Github Isntallaion
             Install {
                 name: None,
                 link: None,
                 github: Some(repo),
             } => {
                 log::info!("Fetching latest release from github");
-                let releases = crate::appimage::github::fetch_release(repo);
-                //todo
+                let releases = crate::appimage::github::fetch_release(repo).await?;
+
+                let selection = Select::with_theme(&ColorfulTheme::default())
+                    .with_prompt("Select release")
+                    .default(0)
+                    .items(&releases.iter().map(|x| x.tag_name.as_str()).collect::<Vec<_>>())
+                    .interact()
+                    .unwrap();
+                
+                appimage = Some(Appimage {
+                    name: releases[selection].tag_name.clone(),
+                    link: releases[selection].assets[0].url.clone(),
+                });
             }
             _ => return Err("Invalid arguments".into()),
         }

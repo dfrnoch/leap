@@ -38,3 +38,10 @@ Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how.
 ## Project Analytics
 
 ![Alt](https://repobeats.axiom.co/api/embed/54602517fd6bbea511cb9031d0c493774608bbce.svg "Repobeats analytics image")
+
+## Future Improvements
+- [ ] One reqwest client for all requests
+
+
+## Credits
+[Microsoft Fluent Emojis](https://github.com/microsoft/fluentui-emoji)
