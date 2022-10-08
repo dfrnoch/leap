@@ -31,13 +31,20 @@ pub async fn download_file(name: String, link: String) -> Result<(), Box<dyn std
     let mut downloaded: u64 = 0;
     let mut stream = res.bytes_stream();
 
-    while let Some(item) = stream.next().await {
-        let chunk = item.or(Err(format!("Error while downloading file")))?;
+    
+    //TODO: prob change how fast it updates
+    let mut display_every: u64 = 0;
+
+    while let Some(chunk) = stream.next().await {
+        let chunk = chunk.or(Err(format!("Failed to get chunk from '{}'", &link)))?;
         file.write_all(&chunk)
-            .or(Err(format!("Error while writing to file")))?;
-        let new = min(downloaded + (chunk.len() as u64), total_size);
-        downloaded = new;
-        pb.set_position(new);
+            .or(Err(format!("Failed to write to file '{:?}'", path)))?;
+
+        downloaded += chunk.len() as u64;
+        if display_every <= downloaded {
+            pb.set_position(downloaded);
+            display_every += 1024 * 1024 / 10;
+        }
     }
 
     pb.finish_with_message(format!("Downloaded {} to {:?}", name, path));
@@ -65,7 +72,7 @@ async fn install_file(name: &str) -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     log::info!("Extracting file");
-    Command::new( path.join(name))
+    Command::new(path.join(name))
         .arg("--appimage-extract")
         .arg(&path)
         .output()
