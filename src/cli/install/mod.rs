@@ -75,20 +75,47 @@ impl Install {
                 link: None,
                 github: Some(repo),
             } => {
+                let name = repo.split("/").last().unwrap().to_owned();
+
                 log::info!("Fetching latest release from github");
                 let releases = crate::appimage::github::fetch_release(repo).await?;
 
                 let selection = Select::with_theme(&ColorfulTheme::default())
                     .with_prompt("Select release")
                     .default(0)
-                    .items(&releases.iter().map(|x| x.tag_name.as_str()).collect::<Vec<_>>())
+                    .items(
+                        &releases
+                            .iter()
+                            .map(|x| x.tag_name.as_str())
+                            .collect::<Vec<_>>(),
+                    )
                     .interact()
                     .unwrap();
-                
-                appimage = Some(Appimage {
-                    name: releases[selection].tag_name.clone(),
-                    link: releases[selection].assets[0].url.clone(),
-                });
+
+                let assets = releases[selection]
+                    .assets
+                    .iter()
+                    .filter(|x| x.name.ends_with(".AppImage"))
+                    .collect::<Vec<_>>();
+
+                if assets.len() == 1 {
+                    appimage = Some(Appimage {
+                        name,
+                        link: assets[0].browser_download_url.clone(),
+                    });
+                } else {
+                    let selection = Select::with_theme(&ColorfulTheme::default())
+                        .with_prompt("Select asset")
+                        .default(0)
+                        .items(&assets.iter().map(|x| x.name.as_str()).collect::<Vec<_>>())
+                        .interact()
+                        .unwrap();
+
+                    appimage = Some(Appimage {
+                        name,
+                        link: assets[selection].browser_download_url.clone(),
+                    });
+                }
             }
             _ => return Err("Invalid arguments".into()),
         }

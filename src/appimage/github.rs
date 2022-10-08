@@ -6,7 +6,7 @@ use std::error::Error;
 pub struct Asset {
     pub name: String,
     pub size: u64,
-    pub url: String,
+    pub browser_download_url: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -24,9 +24,6 @@ pub async fn fetch_release(repo: &str) -> Result<Vec<Release>, Box<dyn Error>> {
         .await?
         .text()
         .await?;
-
-    println!("{}", resp);
-
 
     let releases: Vec<Release> = from_str(&resp)?;
 
