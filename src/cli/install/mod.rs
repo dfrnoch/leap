@@ -1,9 +1,9 @@
 use std::error::Error;
 
 use crate::appimage::{catalog::fetch_catalog, install};
+use clap::Parser;
 use dialoguer::{theme::ColorfulTheme, Confirm, Select};
 
-use super::*;
 
 #[derive(Clone, Debug, Parser)]
 #[clap(alias = "i", about = "Install an appimage.")]

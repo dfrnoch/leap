@@ -1,7 +1,8 @@
-use std::{cmp::min, fs, fs::File, io::Write};
+use std::{fs, fs::File, io::Write, os::unix::prelude::PermissionsExt};
 
 use crate::dirs::data_dir;
 use async_process::Command;
+use file_mode::{ModePath, User};
 use futures_util::StreamExt;
 use indicatif::{ProgressBar, ProgressStyle};
 
@@ -31,7 +32,6 @@ pub async fn download_file(name: String, link: String) -> Result<(), Box<dyn std
     let mut downloaded: u64 = 0;
     let mut stream = res.bytes_stream();
 
-    
     //TODO: prob change how fast it updates
     let mut display_every: u64 = 0;
 
@@ -64,15 +64,13 @@ struct ExtractData {
 //FIXME: BUSY FILE
 async fn install_file(name: &str) -> Result<(), Box<dyn std::error::Error>> {
     let path = data_dir(Some("apps"));
+    let name_path = path.join(name);
 
-    log::info!("Chmodding file");
-    Command::new("chmod")
-        .arg(format!("+x {:?}", path.join(name)).as_str())
-        .output()
-        .await?;
+
+    name_path.set_mode(0o755)?;
 
     log::info!("Extracting file");
-    Command::new(path.join(name))
+    Command::new(name_path)
         .arg("--appimage-extract")
         .arg(&path)
         .output()
