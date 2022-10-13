@@ -64,7 +64,7 @@ impl Install {
                     .unwrap();
 
                 appimage = Some(Appimage {
-                    name: name,
+                    name,
                     link: link.clone(),
                 });
             }
