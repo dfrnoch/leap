@@ -19,7 +19,7 @@ echo -e "$info Checking if the script is run as root $reset"
 if [ "$(id -u)" != "0" ]; then
     echo -e "$info Installi ng as non-root $reset" 1>&2
     
-else
+    # else
     
 fi
 
