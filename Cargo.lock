@@ -275,15 +275,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "file-mode"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "773ea145485772b8d354624b32adbe20e776353d3e48c7b03ef44e3455e9815c"
-dependencies = [
- "libc",
-]
-
-[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -572,7 +563,6 @@ dependencies = [
  "clap",
  "dialoguer",
  "fern",
- "file-mode",
  "futures-util",
  "indicatif",
  "log",

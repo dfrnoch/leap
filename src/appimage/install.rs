@@ -1,15 +1,14 @@
-use std::{fs, fs::File, io::Write, os::unix::prelude::PermissionsExt};
+use std::{fs, fs::File, io::Write, os::unix::prelude::PermissionsExt, path::PathBuf};
 
 use crate::dirs::data_dir;
 use async_process::Command;
-use file_mode::{ModePath, User};
 use futures_util::StreamExt;
 use indicatif::{ProgressBar, ProgressStyle};
 
 pub async fn download_file(name: String, link: String) -> Result<(), Box<dyn std::error::Error>> {
-    let name = format!("{}.AppImage", name);
+    let path = data_dir(Some(name.as_str()));
 
-    let path = data_dir(Some("apps")).join(&name);
+    let name = format!("{}.AppImage", name);
 
     // Reqwest setup
     let client = reqwest::Client::new();
@@ -28,7 +27,8 @@ pub async fn download_file(name: String, link: String) -> Result<(), Box<dyn std
     .template("{msg}\n{spinner:.green} [{elapsed_precise:.green}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})").unwrap().progress_chars("#>-"));
 
     // download chunks
-    let mut file = File::create(&path).or(Err(format!("Failed to create file '{:?}'", path)))?;
+    let mut file =
+        File::create(&path.join(&name)).or(Err(format!("Failed to create file '{:?}'", path)))?;
     let mut downloaded: u64 = 0;
     let mut stream = res.bytes_stream();
 
@@ -50,27 +50,28 @@ pub async fn download_file(name: String, link: String) -> Result<(), Box<dyn std
     pb.finish_with_message(format!("Downloaded {} to {:?}", name, path));
 
     log::info!("Extracting data");
-    install_file(&name).await?;
+
+    install_file(&name.replace(".AppImage", ""), path).await?;
 
     return Ok(());
 }
 
 struct ExtractData {
-    icon: Option<String>,
-    desktop: Option<String>,
+    icon: Option<PathBuf>,
+    desktop: Option<PathBuf>,
 }
 
-//TODO: Make this async, Symlink the file to .local/bin, permissions
+//TODO: Make this async, Symlink the file to .local/bin
 //FIXME: BUSY FILE
-async fn install_file(name: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let path = data_dir(Some("apps"));
-    let name_path = path.join(name);
+async fn install_file(name: &str, path: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    let app_path = path.join(format!("{}.AppImage", name));
 
-
-    name_path.set_mode(0o755)?;
+    let mut perms = fs::metadata(&app_path)?.permissions();
+    perms.set_mode(0o755);
+    fs::set_permissions(&app_path, perms)?;
 
     log::info!("Extracting file");
-    Command::new(name_path)
+    Command::new(&app_path)
         .arg("--appimage-extract")
         .arg(&path)
         .output()
@@ -89,29 +90,19 @@ async fn install_file(name: &str) -> Result<(), Box<dyn std::error::Error>> {
             let path = entry.path();
             let file_name = path.file_name().unwrap().to_str().unwrap();
             if file_name.ends_with(".desktop") {
-                data.desktop = Some(file_name.to_string());
+                data.desktop = Some(path.join(file_name));
             } else if file_name.ends_with(".png") || file_name.ends_with(".svg") {
-                data.icon = Some(file_name.to_string());
+                data.icon = Some(path.join(file_name));
             }
         });
 
-    extract(data);
+    extract(name, data);
 
     return Ok(());
 }
 
-fn extract(data: ExtractData) -> Result<(), Box<dyn std::error::Error>> {
-    // fs::rename(
-    //     path.join("squashfs-root").join(desktop_file),
-    //     path.join(name.to_string() + ".desktop"),
-    // )
-    // .unwrap();
+fn extract(name: &str, data: ExtractData) -> Result<(), Box<dyn std::error::Error>> {
+    //leap/{name}/
 
-    // fs::rename(
-    //     path.join("squashfs-root").join(icon_file),
-    //     path.join(name.to_string() + ".png"),
-    // )
-    // .unwrap();
-    // fs::remove_dir_all(path.join("squashfs-root")).unwrap();
     Ok(())
 }
