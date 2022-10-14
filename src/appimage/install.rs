@@ -72,13 +72,7 @@ async fn install_file(name: &str, path: PathBuf) -> Result<(), Box<dyn std::erro
     fs::set_permissions(&app_path, perms)?;
 
     log::info!("creating symlink");
-    Command::new("ln")
-        .arg("-s")
-        .arg(&app_path)
-        .arg(bin_dir().join(name))
-        .status()
-        .await?;
-
+    std::os::unix::fs::symlink(&app_path, &bin_dir().join(name))?;  
 
     log::info!("Extracting file");
     Command::new(&app_path)
