@@ -61,8 +61,6 @@ struct ExtractData {
     desktop: Option<PathBuf>,
 }
 
-//TODO: Make this async, Symlink the file to .local/bin
-//FIXME: BUSY FILE
 async fn install_file(name: &str, path: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
     let app_path = path.join(format!("{}.AppImage", name));
 
@@ -77,7 +75,6 @@ async fn install_file(name: &str, path: PathBuf) -> Result<(), Box<dyn std::erro
     log::info!("Extracting file");
     Command::new(&app_path)
         .arg("--appimage-extract")
-        .arg(&path)
         .output()
         .await?;
 
