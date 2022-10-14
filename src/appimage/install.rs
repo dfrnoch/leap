@@ -1,6 +1,6 @@
 use std::{fs, fs::File, io::Write, os::unix::prelude::PermissionsExt, path::PathBuf};
 
-use crate::dirs::data_dir;
+use crate::dirs::{data_dir, bin_dir};
 use async_process::Command;
 use futures_util::StreamExt;
 use indicatif::{ProgressBar, ProgressStyle};
@@ -66,9 +66,19 @@ struct ExtractData {
 async fn install_file(name: &str, path: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
     let app_path = path.join(format!("{}.AppImage", name));
 
+    log::info!("Adding executable permissions");
     let mut perms = fs::metadata(&app_path)?.permissions();
     perms.set_mode(0o755);
     fs::set_permissions(&app_path, perms)?;
+
+    log::info!("creating symlink");
+    Command::new("ln")
+        .arg("-s")
+        .arg(&app_path)
+        .arg(bin_dir().join(name))
+        .status()
+        .await?;
+
 
     log::info!("Extracting file");
     Command::new(&app_path)
