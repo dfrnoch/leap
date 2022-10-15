@@ -42,6 +42,8 @@ Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how.
 
 ## Future Improvements
 - [ ] One reqwest client for all requests
+- [ ] Better parsing
+- [ ] Rewrite to more OOP version
 
 
 ## Credits

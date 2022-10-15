@@ -4,7 +4,6 @@ use crate::appimage::{catalog::fetch_catalog, install};
 use clap::Parser;
 use dialoguer::{theme::ColorfulTheme, Confirm, Select};
 
-
 #[derive(Clone, Debug, Parser)]
 #[clap(alias = "i", about = "Install an appimage.")]
 pub struct Install {
@@ -60,7 +59,7 @@ impl Install {
             } => {
                 let name = name
                     .to_owned()
-                    .ok_or("Please provide a name \nusage: leap -l <LINK> <APP_NAME>")
+                    .ok_or("Please provide a name \nusage: leap i -l <LINK> <APP_NAME>")
                     .unwrap();
 
                 appimage = Some(Appimage {
@@ -69,7 +68,7 @@ impl Install {
                 });
             }
 
-            //Github Isntallaion
+            //Github installation
             Install {
                 name: None,
                 link: None,

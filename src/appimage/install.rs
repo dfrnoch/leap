@@ -1,9 +1,9 @@
 use std::{fs, fs::File, io::Write, os::unix::prelude::PermissionsExt, path::PathBuf};
 
-use crate::dirs::data_dir;
-use async_process::Command;
+use crate::dirs::{bin_dir, data_dir};
 use futures_util::StreamExt;
 use indicatif::{ProgressBar, ProgressStyle};
+use std::process::Command;
 
 pub async fn download_file(name: String, link: String) -> Result<(), Box<dyn std::error::Error>> {
     let path = data_dir(Some(name.as_str()));
@@ -61,21 +61,25 @@ struct ExtractData {
     desktop: Option<PathBuf>,
 }
 
-//TODO: Make this async, Symlink the file to .local/bin
-//FIXME: BUSY FILE
 async fn install_file(name: &str, path: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
     let app_path = path.join(format!("{}.AppImage", name));
 
+    log::info!("Adding executable permissions");
     let mut perms = fs::metadata(&app_path)?.permissions();
     perms.set_mode(0o755);
     fs::set_permissions(&app_path, perms)?;
 
-    log::info!("Extracting file");
+    log::info!("creating symlink");
+    if let Err(e) = std::os::unix::fs::symlink(&app_path, &bin_dir().join(name)) {
+        log::warn!("Failed to create symlink: {}", e);
+    }
+
+    log::info!("Extracting appimage data");
     Command::new(&app_path)
         .arg("--appimage-extract")
-        .arg(&path)
-        .output()
-        .await?;
+        .current_dir(&path)
+        .status()
+        .unwrap();
 
     let mut data = ExtractData {
         icon: None,
@@ -96,13 +100,13 @@ async fn install_file(name: &str, path: PathBuf) -> Result<(), Box<dyn std::erro
             }
         });
 
-    extract(name, data);
+    extract(name, data)?;
 
     return Ok(());
 }
 
 fn extract(name: &str, data: ExtractData) -> Result<(), Box<dyn std::error::Error>> {
-    //leap/{name}/
+    let path = data_dir(Some(name));
 
     Ok(())
 }
