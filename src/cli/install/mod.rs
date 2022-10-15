@@ -75,7 +75,7 @@ impl Install {
                 link: None,
                 github: Some(repo),
             } => {
-                let name = repo.split("/").last().unwrap().to_owned();
+                let name = repo.split('/').last().unwrap().to_owned();
 
                 log::info!("Fetching latest release from github");
                 let releases = crate::appimage::github::fetch_release(repo).await?;
