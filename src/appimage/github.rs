@@ -5,7 +5,6 @@ use std::error::Error;
 #[derive(Debug, Deserialize)]
 pub struct Asset {
     pub name: String,
-    pub size: u64,
     pub browser_download_url: String,
 }
 

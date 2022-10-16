@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::appimage::{catalog::fetch_catalog, install};
+use crate::appimage::{catalog::fetch_catalog, AppImage};
 use clap::Parser;
 use dialoguer::{theme::ColorfulTheme, Confirm, Select};
 
@@ -16,14 +16,10 @@ pub struct Install {
     pub name: Option<String>,
 }
 
-pub struct Appimage {
-    pub name: String,
-    pub link: String,
-}
-
 impl Install {
     pub async fn install(&self) -> Result<(), Box<dyn Error>> {
-        let mut appimage: Option<Appimage> = None;
+
+        let mut appimage;
 
         match self {
             //Install from db
@@ -45,10 +41,7 @@ impl Install {
                         name
                     ))
                     .unwrap();
-                appimage = Some(Appimage {
-                    name: app.title,
-                    link: app.url,
-                });
+                appimage = AppImage::new(app.title, app.url);
             }
 
             //Install from link
@@ -62,10 +55,7 @@ impl Install {
                     .ok_or("Please provide a name \nusage: leap i -l <LINK> <APP_NAME>")
                     .unwrap();
 
-                appimage = Some(Appimage {
-                    name,
-                    link: link.clone(),
-                });
+                appimage = AppImage::new(name, link.to_owned());
             }
 
             //Github installation
@@ -98,10 +88,10 @@ impl Install {
                     .collect::<Vec<_>>();
 
                 if assets.len() == 1 {
-                    appimage = Some(Appimage {
+                    appimage = AppImage::new(
                         name,
-                        link: assets[0].browser_download_url.clone(),
-                    });
+                        assets[0].browser_download_url.to_owned(),
+                    );
                 } else {
                     let selection = Select::with_theme(&ColorfulTheme::default())
                         .with_prompt("Select asset")
@@ -110,23 +100,23 @@ impl Install {
                         .interact()
                         .unwrap();
 
-                    appimage = Some(Appimage {
+                    appimage = AppImage::new(
                         name,
-                        link: assets[selection].browser_download_url.clone(),
-                    });
+                        assets[selection].browser_download_url.to_owned(),
+                    );
                 }
             }
             _ => return Err("Invalid arguments".into()),
         }
 
-        let result = appimage.unwrap();
 
         match Confirm::with_theme(&ColorfulTheme::default())
-            .with_prompt(format!("Do you want to install {}?", result.name))
+            .with_prompt(format!("Do you want to install {}?", appimage.name))
             .interact_opt()
             .unwrap()
         {
-            Some(true) => install::download_file(result.name, result.link).await,
+            // install or download?
+            Some(true) => Ok(appimage.download().await?),
             _ => Err("Installation cancelled".into()),
         }
     }
