@@ -1,4 +1,4 @@
-use std::{fs, error::Error};
+use std::{error::Error, fs};
 
 use crate::dirs::bin_dir;
 
