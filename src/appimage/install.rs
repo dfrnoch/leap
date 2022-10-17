@@ -3,6 +3,7 @@ use std::{
     fs::{self, File},
     io::Write,
     os::unix::prelude::PermissionsExt,
+    process::Command,
 };
 
 use futures_util::StreamExt;
@@ -13,24 +14,9 @@ use crate::dirs::bin_dir;
 use super::AppImage;
 
 impl AppImage {
-    pub async fn install(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn install(&mut self) -> Result<(), Box<dyn Error>> {
         let path = &self.path;
         let app_path = path.join(format!("{}.AppImage", self.name));
-
-        // TODO: exract appiamge
-        // fs::read_dir(&path.join("squashfs-root"))
-        //     .unwrap()
-        //     .filter_map(|entry| entry.ok())
-        //     .filter(|entry| entry.path().is_file())
-        //     .for_each(|entry| {
-        //         let path = entry.path();
-        //         let file_name = path.file_name().unwrap().to_str().unwrap();
-        //         if file_name.ends_with(".desktop") {
-        //             self.data.desktop = Some(path.join(file_name));
-        //         } else if file_name.ends_with(".png") || file_name.ends_with(".svg") {
-        //             self.data.icon = Some(path.join(file_name));
-        //         }
-        //     });
 
         log::info!("Adding executable permissions");
         let mut perms = fs::metadata(&app_path)?.permissions();
@@ -41,6 +27,27 @@ impl AppImage {
         if let Err(e) = std::os::unix::fs::symlink(&app_path, &bin_dir().join(&self.name)) {
             log::warn!("Failed to create symlink: {}", e);
         }
+
+        let mut child = Command::new(&self.name)
+            .arg("--appimage-extract")
+            .current_dir(path)
+            .spawn()
+            .expect("joe");
+        child.stdout.take().unwrap();
+
+        fs::read_dir(&path.join("squashfs-root"))
+            .unwrap()
+            .filter_map(|entry| entry.ok())
+            .filter(|entry| entry.path().is_file())
+            .for_each(|entry| {
+                let path = entry.path();
+                let file_name = path.file_name().unwrap().to_str().unwrap();
+                if file_name.ends_with(".desktop") {
+                    self.data.desktop = Some(path.join(file_name));
+                } else if file_name.ends_with(".png") || file_name.ends_with(".svg") {
+                    self.data.icon = Some(path.join(file_name));
+                }
+            });
 
         Ok(())
     }
@@ -83,9 +90,8 @@ impl AppImage {
             }
         }
         pb.finish_with_message(format!("Downloaded {} to {:?}", self.name, self.path));
-        
 
-        self.install().await?;
+        self.install().unwrap();
 
         Ok(())
     }
