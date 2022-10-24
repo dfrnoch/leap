@@ -1,7 +1,6 @@
 # #!/usr/bin/env bash
 # set -euo pipefail
 
-
 # reset="\033[0m"
 # red="\033[31m"
 # green="\033[32m"
