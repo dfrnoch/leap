@@ -1,20 +1,20 @@
+use async_process::Command;
+use futures_util::StreamExt;
+use indicatif::{ProgressBar, ProgressStyle};
 use std::{
     error::Error,
     fs::{self, File},
-    io::Write,
+    io::{Read, Write},
     os::unix::prelude::PermissionsExt,
-    process::Command,
 };
+use tokio::fs::rename;
 
-use futures_util::StreamExt;
-use indicatif::{ProgressBar, ProgressStyle};
-
-use crate::dirs::bin_dir;
+use crate::dirs::{bin_dir, desktop_dir};
 
 use super::AppImage;
 
 impl AppImage {
-    pub fn install(&mut self) -> Result<(), Box<dyn Error>> {
+    pub async fn install(&mut self) -> Result<(), Box<dyn Error>> {
         let path = &self.path;
         let app_path = path.join(format!("{}.AppImage", self.name));
 
@@ -31,9 +31,9 @@ impl AppImage {
         let mut child = Command::new(&self.name)
             .arg("--appimage-extract")
             .current_dir(path)
-            .spawn()
-            .expect("joe");
-        child.stdout.take().unwrap();
+            .spawn()?;
+
+        child.status().await?;
 
         fs::read_dir(&path.join("squashfs-root"))
             .unwrap()
@@ -43,11 +43,36 @@ impl AppImage {
                 let path = entry.path();
                 let file_name = path.file_name().unwrap().to_str().unwrap();
                 if file_name.ends_with(".desktop") {
-                    self.data.desktop = Some(path.join(file_name));
-                } else if file_name.ends_with(".png") || file_name.ends_with(".svg") {
-                    self.data.icon = Some(path.join(file_name));
+                    self.data.desktop = Some(path);
+                } else if file_name.ends_with(".png") {
+                    self.data.icon = Some(path);
                 }
             });
+
+        if let Some(desktop) = &self.data.desktop {
+            log::info!("Moving desktop file");
+
+            let mut file = File::open(desktop)?;
+            let mut contents = String::new();
+            file.read_to_string(&mut contents)?;
+            contents = contents.replace("Exec=", &format!("Exec={}", self.name));
+            let mut file = File::create(desktop)?;
+            file.write_all(contents.as_bytes())?;
+
+            rename(&desktop, &path.join(format!("{}.desktop", self.name))).await?;
+            fs::copy(
+                &path.join(format!("{}.desktop", self.name)),
+                desktop_dir().join(format!("{}.desktop", self.name)),
+            )?;
+        } else {
+            log::warn!("No desktop file found");
+        }
+        if let Some(icon) = &self.data.icon {
+            log::info!("Moving icon file");
+            rename(&icon, &path.join(format!("{}.png", self.name))).await?;
+        }
+
+        fs::remove_dir_all(&path.join("squashfs-root"))?;
 
         Ok(())
     }
@@ -91,7 +116,7 @@ impl AppImage {
         }
         pb.finish_with_message(format!("Downloaded {} to {:?}", self.name, self.path));
 
-        self.install().unwrap();
+        self.install().await?;
 
         Ok(())
     }

@@ -16,6 +16,9 @@ pub fn cache_dir() -> PathBuf {
 pub fn bin_dir() -> PathBuf {
     get_dir("HOME", ".local/bin".to_owned())
 }
+pub fn desktop_dir() -> PathBuf {
+    get_dir("HOME", ".local/share/applications".to_owned())
+}
 
 pub fn data_dir(p: Option<&str>) -> PathBuf {
     get_dir("HOME", ".local/share/leap/".to_owned() + p.unwrap_or(""))
