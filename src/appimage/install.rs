@@ -28,12 +28,11 @@ impl AppImage {
             log::warn!("Failed to create symlink: {}", e);
         }
 
-        let mut child = Command::new(&self.name)
+        Command::new(&app_path)
             .arg("--appimage-extract")
-            .current_dir(path)
-            .spawn()?;
-
-        child.status().await?;
+            .current_dir(&path)
+            .status()
+            .await?;
 
         fs::read_dir(&path.join("squashfs-root"))
             .unwrap()
@@ -95,26 +94,28 @@ impl AppImage {
     .template("{msg}\n{spinner:.green} [{elapsed_precise:.green}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})").unwrap().progress_chars("#>-"));
 
         // download chunks
-        let mut file = File::create(&self.path.join(format!("{}.AppImage", self.name)))
-            .or(Err(format!("Failed to create file '{:?}'", &self.path)))?;
-        let mut downloaded: u64 = 0;
-        let mut stream = res.bytes_stream();
+        {
+            let mut file = File::create(&self.path.join(format!("{}.AppImage", self.name)))
+                .or(Err(format!("Failed to create file '{:?}'", &self.path)))?;
+            let mut downloaded: u64 = 0;
+            let mut stream = res.bytes_stream();
 
-        //TODO: prob change how fast it updates
-        let mut display_every: u64 = 0;
+            //TODO: prob change how fast it updates
+            let mut display_every: u64 = 0;
 
-        while let Some(chunk) = stream.next().await {
-            let chunk = chunk.or(Err(format!("Failed to get chunk from '{}'", &self.link)))?;
-            file.write_all(&chunk)
-                .or(Err(format!("Failed to write to file '{:?}'", self.path)))?;
+            while let Some(chunk) = stream.next().await {
+                let chunk = chunk.or(Err(format!("Failed to get chunk from '{}'", &self.link)))?;
+                file.write_all(&chunk)
+                    .or(Err(format!("Failed to write to file '{:?}'", self.path)))?;
 
-            downloaded += chunk.len() as u64;
-            if display_every <= downloaded {
-                pb.set_position(downloaded);
-                display_every += 1024 * 1024 / 10;
+                downloaded += chunk.len() as u64;
+                if display_every <= downloaded {
+                    pb.set_position(downloaded);
+                    display_every += 1024 * 1024 / 10;
+                }
             }
+            pb.finish_with_message(format!("Downloaded {} to {:?}", self.name, self.path));
         }
-        pb.finish_with_message(format!("Downloaded {} to {:?}", self.name, self.path));
 
         self.install().await?;
 
