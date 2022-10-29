@@ -54,11 +54,22 @@ impl AppImage {
             let mut file = File::open(desktop)?;
             let mut contents = String::new();
             file.read_to_string(&mut contents)?;
-            contents = contents.replace("Exec=", &format!("Exec={}", self.name));
-            let mut file = File::create(desktop)?;
+
+            let exec = contents.find("Exec=").unwrap();
+            let end = contents[exec..].find("\n").unwrap();
+            contents.replace_range(exec + 5..exec + end, &self.name);
+
+            contents = contents.replace(
+                &format!("Icon={}", &self.name),
+                &format!(
+                    "Icon={}.png",
+                    self.path.join(format!("{}", self.name)).to_str().unwrap()
+                ),
+            );
+
+            let mut file = File::create(path.join(format!("{}.desktop", self.name)))?;
             file.write_all(contents.as_bytes())?;
 
-            rename(&desktop, &path.join(format!("{}.desktop", self.name))).await?;
             fs::copy(
                 &path.join(format!("{}.desktop", self.name)),
                 desktop_dir().join(format!("{}.desktop", self.name)),
