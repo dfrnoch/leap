@@ -59,12 +59,12 @@ impl AppImage {
             let end = contents[exec..].find("\n").unwrap();
             contents.replace_range(exec + 5..exec + end, &self.name);
 
+            let name = contents.find("Name=").unwrap();
+            let end = contents[name..].find("\n").unwrap();
+            let name = &contents[name + 5..name + end];
             contents = contents.replace(
-                &format!("Icon={}", &self.name),
-                &format!(
-                    "Icon={}.png",
-                    self.path.join(format!("{}", self.name)).to_str().unwrap()
-                ),
+                format!("Icon={}", name).as_str(),
+                format!("Icon={}", self.name).as_str(),
             );
 
             let mut file = File::create(path.join(format!("{}.desktop", self.name)))?;
@@ -77,12 +77,26 @@ impl AppImage {
         } else {
             log::warn!("No desktop file found");
         }
+
         if let Some(icon) = &self.data.icon {
             log::info!("Moving icon file");
             rename(&icon, &path.join(format!("{}.png", self.name))).await?;
         }
 
         fs::remove_dir_all(&path.join("squashfs-root"))?;
+
+        Command::new("xdg-icon-resource")
+            .arg("install")
+            .arg("--novendor")
+            .arg("--size")
+            .arg("128")
+            .arg(format!(
+                "{}.png",
+                self.path.join(format!("{}", self.name)).to_str().unwrap()
+            ))
+            .arg(&self.name)
+            .status()
+            .await?;
 
         Ok(())
     }

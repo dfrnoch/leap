@@ -6,7 +6,7 @@ use clap::{Parser, Subcommand};
 #[clap(version, about, long_about = None)]
 pub struct Cli {
     #[command(subcommand)]
-    pub command: Commands
+    pub command: Commands,
 }
 
 #[derive(Subcommand, Debug)]
@@ -14,8 +14,8 @@ pub enum Commands {
     /// Install an appimage.
     Install(install::Install),
     // /// Uninstall an appimage.
-    // Uninstall(Uninstall),
 
+    // Uninstall(Uninstall),
     // /// List installed appimages.
     // List(List),
 
