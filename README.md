@@ -19,9 +19,14 @@
   </p>
 </div>
 
-## Is it any good?
+## What's working
 
-Yes.
+- [x] Installation _(github only, info about app not stored yet)_
+- [ ] Remove/Uninstall
+- [ ] Update
+- [ ] List installed apps
+- [ ]
+- [ ] Update
 
 ## License
 
@@ -41,10 +46,11 @@ Please see the [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how.
 ![Alt](https://repobeats.axiom.co/api/embed/54602517fd6bbea511cb9031d0c493774608bbce.svg "Repobeats analytics image")
 
 ## Future Improvements
+
 - [ ] One reqwest client for all requests
 - [ ] Better parsing
 - [ ] Rewrite to more OOP version
 
-
 ## Credits
+
 [Microsoft Fluent Emojis](https://github.com/microsoft/fluentui-emoji)
