@@ -25,8 +25,6 @@
 - [ ] Remove/Uninstall
 - [ ] Update
 - [ ] List installed apps
-- [ ]
-- [ ] Update
 
 ## License
 
