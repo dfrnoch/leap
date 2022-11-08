@@ -144,6 +144,7 @@ impl AppImage {
 
         self.install().await?;
 
+
         Ok(())
     }
 }
